@@ -185,3 +185,21 @@ func (usersRepository UsersRepository) GetByEmail(email string) (models.User, er
 
 	return user, nil
 }
+
+func (usersRepository UsersRepository) Follow(id, followerId uint64) error {
+	query := `
+		INSERT INTO followers (userId, followerId) values ($1, $2) ON CONFLICT (userId, followerId) DO NOTHING
+	`
+
+	statement, err := usersRepository.db.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(id, followerId); err != nil {
+		return err
+	}
+
+	return nil
+}
