@@ -9,15 +9,16 @@ import (
 type Route struct {
 	URI                   string
 	Method                string
-	Function              func(http.ResponseWriter, *http.Request)
+	Handler               func(http.ResponseWriter, *http.Request)
 	requireAuthentication bool
 }
 
 func Configure(r *mux.Router) *mux.Router {
 	routes := userRoutes
+	routes = append(routes, authRoutes...)
 
 	for _, route := range routes {
-		r.HandleFunc(route.URI, route.Function).Methods(route.Method)
+		r.HandleFunc(route.URI, route.Handler).Methods(route.Method)
 	}
 
 	return r
