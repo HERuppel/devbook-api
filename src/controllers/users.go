@@ -279,3 +279,28 @@ func FetchFollowers(w http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(w, http.StatusOK, followers)
 }
+
+func FetchFollowing(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id, err := strconv.ParseUint(params["id"], 10, 64)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	usersRepository := repositories.NewUserRepository(db)
+	following, err := usersRepository.FetchFollowing(id)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, following)
+}
