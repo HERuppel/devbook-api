@@ -259,3 +259,41 @@ func (usersRepository UsersRepository) FetchFollowers(id uint64) ([]models.User,
 
 	return users, nil
 }
+
+func (usersRepository UsersRepository) FetchFollowing(id uint64) ([]models.User, error) {
+	query := `
+		SELECT
+			u.id,
+			u.name,
+			u.nick,
+			u.email,
+			u."createdAt"
+		FROM users u 
+		inner join followers f on u.id = f.userId where f.followerId = $1
+	`
+
+	rows, err := usersRepository.db.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []models.User
+	for rows.Next() {
+		var user models.User
+
+		if err = rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nick,
+			&user.Email,
+			&user.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
+}
