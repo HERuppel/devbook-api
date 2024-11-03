@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strings"
 )
 
 func Create(w http.ResponseWriter, r *http.Request) {
@@ -36,8 +37,8 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	repository := repositories.NewUserRepository(db)
-	user.ID, err = repository.Create(user)
+	usersRepository := repositories.NewUserRepository(db)
+	user.ID, err = usersRepository.Create(user)
 	if err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)
 		return
@@ -47,7 +48,23 @@ func Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func Fetch(w http.ResponseWriter, r *http.Request) {
+	nameOrNick := strings.ToLower(r.URL.Query().Get("user"))
 
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	usersRepository := repositories.NewUserRepository(db)
+	users, err := usersRepository.Fetch(nameOrNick)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, users)
 }
 
 func Get(w http.ResponseWriter, r *http.Request) {
