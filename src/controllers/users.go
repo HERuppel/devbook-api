@@ -21,11 +21,18 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	if err = json.Unmarshal(body, &user); err != nil {
 		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err = user.Prepare(); err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
 	}
 
 	db, err := database.Connect()
 	if err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)
+		return
 	}
 	defer db.Close()
 
@@ -33,6 +40,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	user.ID, err = repository.Create(user)
 	if err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	responses.JSON(w, http.StatusCreated, user)
