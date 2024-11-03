@@ -297,3 +297,52 @@ func (usersRepository UsersRepository) FetchFollowing(id uint64) ([]models.User,
 
 	return users, nil
 }
+
+func (usersRepository UsersRepository) GetPassword(id uint64) (string, error) {
+	query := `
+		SELECT
+			password
+		FROM users
+		WHERE id = $1
+	`
+
+	row, err := usersRepository.db.Query(query, id)
+	if err != nil {
+		return "", err
+	}
+	defer row.Close()
+
+	var user models.User
+
+	if row.Next() {
+		if err = row.Scan(
+			&user.Password,
+		); err != nil {
+			return "", err
+		}
+	}
+
+	return user.Password, nil
+}
+
+func (usersRepository UsersRepository) UpdatePassword(id uint64, hash string) error {
+	query := `
+		UPDATE
+			users
+		SET 
+			password = $1
+		WHERE id = $2
+	`
+
+	statement, err := usersRepository.db.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(hash, id); err != nil {
+		return err
+	}
+
+	return nil
+}
