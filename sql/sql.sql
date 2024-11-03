@@ -1,0 +1,13 @@
+CREATE DATABASE IF NOT EXISTS devbook;
+USE devbook;
+
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users(
+  id SERIAL,
+  name VARCHAR(50) NOT NULL,
+  nick VARCHAR(50) NOT NULL unique,
+  email VARCHAR(50) NOT NULL unique,
+  password VARCHAR(20) NOT NULL unique,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP()  
+);
