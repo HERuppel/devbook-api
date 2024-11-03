@@ -8,6 +8,6 @@ CREATE TABLE users(
   name VARCHAR(50) NOT NULL,
   nick VARCHAR(50) NOT NULL unique,
   email VARCHAR(50) NOT NULL unique,
-  password VARCHAR(20) NOT NULL unique,
+  password VARCHAR(20) NOT NULL,
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP()  
 );
