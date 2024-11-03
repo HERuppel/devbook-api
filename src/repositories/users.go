@@ -57,8 +57,6 @@ func (usersRepository UsersRepository) Fetch(nameOrNick string) ([]models.User, 
 		nameOrNick,
 	)
 
-	fmt.Println("CHEUGFIE AQUI O")
-
 	if err != nil {
 		return nil, err
 	}
@@ -137,6 +135,22 @@ func (usersRepository UsersRepository) Update(id uint64, user models.User) error
 	defer statement.Close()
 
 	if _, err = statement.Exec(user.Name, user.Nick, user.Email, id); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (usersRepository UsersRepository) Delete(id uint64) error {
+	query := `DELETE FROM users WHERE id = $1`
+
+	statement, err := usersRepository.db.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(id); err != nil {
 		return err
 	}
 
