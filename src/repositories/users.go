@@ -166,7 +166,7 @@ func (usersRepository UsersRepository) GetByEmail(email string) (models.User, er
 		WHERE email = $1
 	`
 
-	row, err := usersRepository.db.Query(query)
+	row, err := usersRepository.db.Query(query, email)
 	if err != nil {
 		return models.User{}, err
 	}
