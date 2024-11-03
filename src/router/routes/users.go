@@ -16,24 +16,24 @@ var userRoutes = []Route{
 		URI:                   "/users",
 		Method:                http.MethodGet,
 		Handler:               controllers.Fetch,
-		requireAuthentication: false,
+		requireAuthentication: true,
 	},
 	{
 		URI:                   "/users/{id}",
 		Method:                http.MethodGet,
 		Handler:               controllers.Get,
-		requireAuthentication: false,
+		requireAuthentication: true,
 	},
 	{
 		URI:                   "/users/{id}",
 		Method:                http.MethodPut,
 		Handler:               controllers.Update,
-		requireAuthentication: false,
+		requireAuthentication: true,
 	},
 	{
 		URI:                   "/users/{id}",
 		Method:                http.MethodDelete,
 		Handler:               controllers.Delete,
-		requireAuthentication: false,
+		requireAuthentication: true,
 	},
 }
