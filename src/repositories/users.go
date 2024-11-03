@@ -84,3 +84,38 @@ func (usersRepository UsersRepository) Fetch(nameOrNick string) ([]models.User, 
 
 	return users, nil
 }
+
+func (usersRepository UsersRepository) Get(id uint64) (models.User, error) {
+	query := `
+		SELECT 
+			id,
+			name,
+			nick,
+			email,
+			"createdAt"
+		FROM users
+		WHERE id = $1
+	`
+
+	row, err := usersRepository.db.Query(query, id)
+	if err != nil {
+		return models.User{}, err
+	}
+	defer row.Close()
+
+	var user models.User
+
+	if row.Next() {
+		if err = row.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Nick,
+			&user.Email,
+			&user.CreatedAt,
+		); err != nil {
+			return models.User{}, err
+		}
+	}
+
+	return user, nil
+}
