@@ -119,3 +119,26 @@ func (usersRepository UsersRepository) Get(id uint64) (models.User, error) {
 
 	return user, nil
 }
+
+func (usersRepository UsersRepository) Update(id uint64, user models.User) error {
+	query := `
+		UPDATE users
+			SET 
+				name = $1,
+				nick = $2,
+				email = $3
+			WHERE id = $4
+	`
+
+	statement, err := usersRepository.db.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(user.Name, user.Nick, user.Email, id); err != nil {
+		return err
+	}
+
+	return nil
+}
