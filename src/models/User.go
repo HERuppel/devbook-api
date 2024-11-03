@@ -4,6 +4,8 @@ import (
 	"errors"
 	"strings"
 	"time"
+
+	"github.com/badoux/checkmail"
 )
 
 type User struct {
@@ -34,6 +36,11 @@ func (user *User) validate(step string) error {
 	if user.Email == "" {
 		return errors.New("EMAIL_REQUIRED")
 	}
+
+	if err := checkmail.ValidateFormat(user.Email); err != nil {
+		return errors.New("INAVALID_FORM_EMAIL")
+	}
+
 	if step == "CREATE" && user.Password == "" {
 		return errors.New("PASSWORD_REQUIRED")
 	}
