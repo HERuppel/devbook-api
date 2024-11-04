@@ -184,3 +184,25 @@ func (postsRepository PostsRepository) FetchByUser(userId uint64) ([]models.Post
 
 	return posts, nil
 }
+
+func (postsRepository PostsRepository) Like(postId uint64) error {
+	query := `
+		UPDATE 
+			posts
+		SET
+			likes = likes + 1
+		WHERE id = $1
+	`
+
+	statement, err := postsRepository.db.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(postId); err != nil {
+		return err
+	}
+
+	return nil
+}
