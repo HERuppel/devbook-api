@@ -77,6 +77,10 @@ func UpdatePassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		responses.Error(w, http.StatusUnprocessableEntity, err)
+		return
+	}
 
 	var password models.Password
 	if err = json.Unmarshal(body, &password); err != nil {
