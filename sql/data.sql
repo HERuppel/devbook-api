@@ -11,4 +11,8 @@ VALUES
 (3, 1),
 (1, 3);
 
-
+INSERT INTO posts(title, content, authorid) 
+VALUES
+('Post 1', 'Conteudo 1', 1),
+('Post 2', 'Conteudo 2', 2),
+('Post 3', 'Conteudo 3', 3);
