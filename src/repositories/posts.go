@@ -3,7 +3,6 @@ package repositories
 import (
 	"api/src/models"
 	"database/sql"
-	"fmt"
 )
 
 type PostsRepository struct {
@@ -36,7 +35,7 @@ func (postsRepository PostsRepository) Create(post models.Post) (uint64, error) 
 
 func (postsRepository PostsRepository) Get(id uint64) (models.Post, error) {
 	query := `
-		SELECT p.*, u.nick FROM posts p INNER JOIN users u on p.authorid = u.id WHERE id = $1
+		SELECT p.*, u.nick FROM posts p INNER JOIN users u on p.authorid = u.id WHERE p.id = $1
 	`
 
 	row, err := postsRepository.db.Query(query, id)
@@ -101,6 +100,27 @@ func (postsRepository PostsRepository) Fetch(userId uint64) ([]models.Post, erro
 		posts = append(posts, post)
 	}
 
-	fmt.Println("🚀 ~ file: posts.go ~ line 101 ~ forrows.Next ~ posts : ", posts)
 	return posts, nil
+}
+
+func (postsRepository PostsRepository) Update(postId uint64, post models.Post) error {
+	query := `
+		UPDATE posts
+			SET
+				title = $1,
+				content = $2
+			WHERE id = $3
+	`
+
+	statement, err := postsRepository.db.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(post.Title, post.Content, postId); err != nil {
+		return err
+	}
+
+	return nil
 }
