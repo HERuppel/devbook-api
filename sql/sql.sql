@@ -21,3 +21,13 @@ CREATE TABLE followers(
   constraint fk_userId FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
   constraint fk_followerId FOREIGN KEY (followerId) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE posts(
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(50) not null,
+  content varchar(300) not null,
+  authorId int not null,
+  likes int default 0,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (authorId) REFERENCES users(id) ON DELETE CASCADE
+)
