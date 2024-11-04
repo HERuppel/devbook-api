@@ -144,3 +144,43 @@ func (postsRepository PostsRepository) Delete(postId uint64) error {
 
 	return nil
 }
+
+func (postsRepository PostsRepository) FetchByUser(userId uint64) ([]models.Post, error) {
+	query := `
+		SELECT DISTINCT 
+			p.*,
+			u.nick
+		FROM posts p
+		INNER JOIN users u ON p.authorid = u.id
+		WHERE p.authorid = $1
+		ORDER BY p.id DESC
+	`
+
+	rows, err := postsRepository.db.Query(query, userId)
+	if err != nil {
+		return []models.Post{}, err
+	}
+	defer rows.Close()
+
+	var posts []models.Post
+
+	for rows.Next() {
+		var post models.Post
+
+		if err = rows.Scan(
+			&post.ID,
+			&post.Title,
+			&post.Content,
+			&post.AuthorID,
+			&post.Likes,
+			&post.CreatedAt,
+			&post.AuthorNick,
+		); err != nil {
+			return []models.Post{}, err
+		}
+
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
