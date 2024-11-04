@@ -25,13 +25,13 @@ var postRoutes = []Route{
 		requireAuthentication: true,
 	},
 	{
-		URI:                   "/posts",
+		URI:                   "/posts/{id}",
 		Method:                http.MethodPut,
 		Handler:               controllers.UpdatePost,
 		requireAuthentication: true,
 	},
 	{
-		URI:                   "/posts",
+		URI:                   "/posts/{id}",
 		Method:                http.MethodDelete,
 		Handler:               controllers.DeletePost,
 		requireAuthentication: true,
