@@ -42,4 +42,10 @@ var postRoutes = []Route{
 		Handler:               controllers.FetchPostsByUser,
 		requireAuthentication: true,
 	},
+	{
+		URI:                   "/posts/{id}/like",
+		Method:                http.MethodPost,
+		Handler:               controllers.LikePost,
+		requireAuthentication: true,
+	},
 }
